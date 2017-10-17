@@ -9,6 +9,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/blendlabs/go-exception"
+  packages = ["."]
+  revision = "e1610d7cc316c128670bb239a4d0beab2acb41da"
+
+[[projects]]
+  branch = "master"
   name = "github.com/dsnet/compress"
   packages = [".","bzip2","bzip2/internal/sais","internal","internal/errors","internal/prefix"]
   revision = "c4dbed65594871659ea7347a85e1b8dcd97b9990"
@@ -18,6 +24,12 @@
   packages = ["."]
   revision = "3321baafb1bb36f5288e5fff1c7cc98abd4c173a"
   version = "v1.29.2"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/golang/freetype"
+  packages = ["raster","truetype"]
+  revision = "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
 
 [[projects]]
   branch = "master"
@@ -66,9 +78,21 @@
   revision = "0c6b41e72360850ca4f98dc341fd999726ea007f"
   version = "v0.5.4"
 
+[[projects]]
+  name = "github.com/wcharczuk/go-chart"
+  packages = [".","drawing"]
+  revision = "fc2973067ce43455507ea5f9aa9814aabbf8f2ca"
+  version = "v2.0"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/image"
+  packages = ["draw","font","math/f64","math/fixed"]
+  revision = "f7e31b4ea2e3413ab91b4e7d2dc83e5f8d19a44c"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a3e1c8c04e911f3c3a072396af95ff478269aa7a3527a2ef6c822eec88ab7949"
+  inputs-digest = "22dd4cd3770b3e7a2fc1d7dbc92aee2ff9096213641376128b3515de31c79ea8"
   solver-name = "gps-cdcl"
   solver-version = 1

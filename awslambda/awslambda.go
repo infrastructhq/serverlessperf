@@ -12,14 +12,16 @@ import (
 	"github.com/mholt/archiver"
 )
 
+// MemorySizes indicates what sizes are supported by AWS Lambda
+var MemorySizes = []int64{128, 256, 512, 1024, 1536}
+
 // Result stores performance information
 type Result struct {
-	CPUMs                   int32   `json:"cpu_ms"`
-	NetworkSpeedMBPerSecond float32 `json:"network_mbs"`
+	CPUMs int64 `json:"cpu_ms"`
 }
 
 // Results maps memory size to result
-type Results map[int]*Result
+type Results map[int64]*Result
 
 // Benchmark run banchmarks
 func Benchmark() (Results, error) {
@@ -39,17 +41,30 @@ func Benchmark() (Results, error) {
 	}
 	defer deleteFunction(lambdasvc)
 
-	result, err := lambdasvc.Invoke(&lambda.InvokeInput{FunctionName: aws.String(functionName)})
-	if err != nil {
-		return nil, err
-	}
+	res := Results{}
+	for _, size := range MemorySizes {
+		fmt.Printf("%dMB memory size...", size)
 
-	fmt.Println(fmt.Sprintf("------------ %+v", string(result.Payload)))
+		_, err := lambdasvc.UpdateFunctionConfiguration(&lambda.UpdateFunctionConfigurationInput{
+			FunctionName: aws.String(functionName),
+			MemorySize:   aws.Int64(size),
+		})
+		if err != nil {
+			return nil, err
+		}
 
-	res := Results{128: &Result{}}
-	err = json.Unmarshal(result.Payload, res[128])
-	if err != nil {
-		return nil, err
+		result, err := lambdasvc.Invoke(&lambda.InvokeInput{FunctionName: aws.String(functionName)})
+		if err != nil {
+			return nil, err
+		}
+
+		res[size] = &Result{}
+		err = json.Unmarshal(result.Payload, res[size])
+		if err != nil {
+			return nil, err
+		}
+
+		fmt.Println(" done")
 	}
 
 	return res, nil
@@ -101,10 +116,10 @@ func createFunction(svc *lambda.Lambda, role string) error {
 		Code:         &lambda.FunctionCode{ZipFile: buf.Bytes()},
 		FunctionName: aws.String(functionName),
 		Handler:      aws.String("handler.perf"),
-		MemorySize:   aws.Int64(128),
+		MemorySize:   aws.Int64(MemorySizes[0]),
 		Role:         aws.String(role),
 		Runtime:      aws.String("nodejs6.10"),
-		Timeout:      aws.Int64(20),
+		Timeout:      aws.Int64(10),
 	})
 
 	return err

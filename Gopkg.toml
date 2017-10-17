@@ -27,3 +27,7 @@
 [[constraint]]
   name = "github.com/aws/aws-sdk-go"
   version = "1.12.10"
+
+[[constraint]]
+  name = "github.com/wcharczuk/go-chart"
+  version = "2.0.0"
